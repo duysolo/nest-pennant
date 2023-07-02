@@ -1,0 +1,3 @@
+# Mercury Pennant
+**Mercury Pennant** is a sleek and lightweight feature flag package exclusively designed for NestJS. 
+This purpose-built tool eliminates unnecessary complexity, allowing you to seamlessly roll out new application features with confidence, conduct A/B testing for interface designs, effortlessly complement a trunk-based development strategy, and unlock a multitude of possibilities within your NestJS projects.
