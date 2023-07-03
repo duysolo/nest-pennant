@@ -20,7 +20,8 @@
     "allowJs": false,
     "outDir": "./dist",
     "baseUrl": "./",
-    "rootDir": "src",
+    "sourceRoot": "./",
+    "rootDirs": ["src/"],
     "lib": ["ES2019"],
     "esModuleInterop": true,
     "noUnusedLocals": true
