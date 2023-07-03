@@ -20,18 +20,11 @@
     "allowJs": false,
     "outDir": "./dist",
     "baseUrl": "./",
-    "lib": [
-      "ES2019"
-    ],
+    "rootDir": "src",
+    "lib": ["ES2019"],
     "esModuleInterop": true,
     "noUnusedLocals": true
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "test",
-    "dist"
-  ]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "test", "dist"]
 }
