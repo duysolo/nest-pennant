@@ -13,9 +13,10 @@ import {
   PENNANT_DEFINITIONS_MODULE_OPTIONS,
 } from './domain/definitions'
 import { APP_GUARD, Reflector } from '@nestjs/core'
-import { FeatureFlagGuard } from './domain/guards'
+import { FeaturesFlagGuard } from './domain/guards'
 import { FeatureFlagRepository } from './domain/repositories'
 import { DefaultFeatureFlagRepository } from './infrastructure/repositories'
+import { SimpleFeaturesFlagService } from './domain/services'
 
 export interface IPennantModuleOptions extends Pick<ModuleMetadata, 'imports'> {
   global: boolean
@@ -70,6 +71,7 @@ export class PennantModule {
       ],
       providers: [
         FeaturesFlagService,
+        SimpleFeaturesFlagService,
         {
           ...(featureFlagRepository || {
             useClass: DefaultFeatureFlagRepository,
@@ -79,13 +81,21 @@ export class PennantModule {
         {
           provide: APP_GUARD,
           scope: Scope.REQUEST,
-          useFactory: (ref: Reflector, service: FeaturesFlagService) => {
-            return new FeatureFlagGuard(ref, service)
+          useFactory: (
+            ref: Reflector,
+            service: FeaturesFlagService,
+            simpleService: SimpleFeaturesFlagService
+          ) => {
+            return new FeaturesFlagGuard(ref, service, simpleService)
           },
-          inject: [Reflector, FeaturesFlagService],
+          inject: [Reflector, FeaturesFlagService, SimpleFeaturesFlagService],
         },
       ],
-      exports: [FeaturesFlagService, FeatureFlagRepository],
+      exports: [
+        FeatureFlagRepository,
+        FeaturesFlagService,
+        SimpleFeaturesFlagService,
+      ],
     }
   }
 }

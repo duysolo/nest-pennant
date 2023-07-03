@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { FeatureFlagRepository } from '../../domain/repositories'
 
 /**
@@ -8,7 +8,7 @@ import { FeatureFlagRepository } from '../../domain/repositories'
 
 @Injectable()
 export class DefaultFeatureFlagRepository implements FeatureFlagRepository {
-  public async getFeatures(__: ExecutionContext): Promise<string[]> {
+  public async getFeatures(): Promise<string[]> {
     return []
   }
 

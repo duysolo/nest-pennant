@@ -1,55 +1,82 @@
-import { ExecutionContext, Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Scope } from '@nestjs/common'
 import {
   IPennantDefinitions,
   PENNANT_DEFINITIONS_MODULE_OPTIONS,
 } from '../definitions'
 import { FeatureFlagRepository } from '../repositories'
+import { REQUEST } from '@nestjs/core'
+import { defaultGetUserFromRequest, uniq } from '../helpers'
 
-export interface IUSer {
-  id: string
-}
-
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class FeaturesFlagService {
   protected isFetched: boolean = false
+  protected isFetchedUser: boolean = false
 
   protected enabledFeatures: string[] = []
+  protected enabledFeaturesForUser: string[] = []
 
   public constructor(
     @Inject(PENNANT_DEFINITIONS_MODULE_OPTIONS)
     private readonly _options: IPennantDefinitions,
-    private readonly _repository: FeatureFlagRepository
+    private readonly _repository: FeatureFlagRepository,
+    @Inject(REQUEST)
+    private readonly _request: unknown
   ) {
     this.enabledFeatures = uniq(this._options.globalEnabledFeatures)
   }
 
-  public async isEnabled(
-    shouldHaveFeatures: string[],
-    context: ExecutionContext
-  ): Promise<boolean> {
-    if (!this.isFetched) {
-      this.enabledFeatures = uniq([
-        ...(await this._repository.getFeatures(context)),
-        ...this.enabledFeatures,
-      ])
+  public async isEnabled(shouldHaveFeatures: string[]): Promise<boolean> {
+    await this.fetch()
 
-      this.isFetched = true
+    return this.checkFeatures(shouldHaveFeatures)
+  }
+
+  public async isEnabledForUser(
+    shouldHaveFeatures: string[]
+  ): Promise<boolean> {
+    await this.fetch()
+
+    const user = (
+      this._options.getUserFromRequestHandler || defaultGetUserFromRequest
+    )(this._request)
+
+    if (!user) {
+      return false
     }
 
-    return checkFeatures(this.enabledFeatures, shouldHaveFeatures)
+    return this.checkFeatures(shouldHaveFeatures)
   }
-}
 
-function checkFeatures(
-  enabledFeatures: string[],
-  shouldHaveFeatures: string[]
-) {
-  return (
-    !enabledFeatures.length ||
-    shouldHaveFeatures.every((item) => enabledFeatures.includes(item))
-  )
-}
+  protected async fetch(userId?: string): Promise<void> {
+    if (!this.isFetchedUser) {
+      if (userId) {
+        this.enabledFeaturesForUser = await this._repository.getFeaturesByUser(
+          userId
+        )
 
-function uniq<T>(array: T[]): T[] {
-  return Array.from(new Set<T>(array))
+        this.isFetchedUser = true
+      }
+    }
+
+    if (!this.isFetched) {
+      this.enabledFeatures = await this._repository.getFeatures()
+
+      this.isFetched = true
+
+      console.log(`fetch enabledFeatures again`)
+    }
+  }
+
+  protected checkFeatures(shouldHaveFeatures: string[]) {
+    const allEnabledFeatures = uniq([
+      ...this.enabledFeatures,
+      ...this.enabledFeaturesForUser,
+      ...this._options.globalEnabledFeatures,
+    ])
+
+    return (
+      !allEnabledFeatures.length ||
+      shouldHaveFeatures.every((item) => allEnabledFeatures.includes(item))
+    )
+  }
 }
