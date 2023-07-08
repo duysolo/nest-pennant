@@ -10,10 +10,10 @@ import { defaultGetUserFromRequest, uniq } from '../helpers'
 @Injectable({ scope: Scope.REQUEST })
 export class FeaturesFlagService {
   protected isFetched: boolean = false
-  protected isFetchedUser: boolean = false
-
   protected enabledFeatures: string[] = []
-  protected enabledFeaturesForUser: string[] = []
+
+  protected isFetchedUser: Record<string, boolean> = {}
+  protected enabledFeaturesForUser: Record<string, string[]> = {}
 
   public constructor(
     @Inject(PENNANT_DEFINITIONS_MODULE_OPTIONS)
@@ -34,9 +34,7 @@ export class FeaturesFlagService {
   public async isEnabledForUser(
     shouldHaveFeatures: string[]
   ): Promise<boolean> {
-    await this.fetch()
-
-    const user = (
+    const user = await (
       this._options.getUserFromRequestHandler || defaultGetUserFromRequest
     )(this._request)
 
@@ -44,17 +42,18 @@ export class FeaturesFlagService {
       return false
     }
 
+    await this.fetch(user.id)
+
     return this.checkFeatures(shouldHaveFeatures)
   }
 
   protected async fetch(userId?: string): Promise<void> {
-    if (!this.isFetchedUser) {
-      if (userId) {
-        this.enabledFeaturesForUser = await this._repository.getFeaturesByUser(
-          userId
-        )
+    if (userId) {
+      if (!this.isFetchedUser[userId]) {
+        this.enabledFeaturesForUser[userId] =
+          await this._repository.getFeaturesByUser(userId)
 
-        this.isFetchedUser = true
+        this.isFetchedUser[userId] = true
       }
     }
 
@@ -62,15 +61,13 @@ export class FeaturesFlagService {
       this.enabledFeatures = await this._repository.getFeatures()
 
       this.isFetched = true
-
-      console.log(`fetch enabledFeatures again`)
     }
   }
 
-  protected checkFeatures(shouldHaveFeatures: string[]) {
+  protected checkFeatures(shouldHaveFeatures: string[], userId?: string) {
     const allEnabledFeatures = uniq([
       ...this.enabledFeatures,
-      ...this.enabledFeaturesForUser,
+      ...(!userId ? [] : this.enabledFeaturesForUser[userId] || []),
       ...this._options.globalEnabledFeatures,
     ])
 

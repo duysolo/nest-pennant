@@ -32,6 +32,7 @@ export interface IPennantModuleOptions extends Pick<ModuleMetadata, 'imports'> {
     ) => Promise<FeatureFlagRepository> | FeatureFlagRepository
     inject?: Array<InjectionToken | OptionalFactoryDependency>
   }
+  otherProviders?: Provider[]
 }
 
 @Module({})
@@ -60,6 +61,7 @@ export class PennantModule {
     imports,
     definitions,
     featureFlagRepository,
+    otherProviders,
     global,
   }: IPennantModuleOptions): DynamicModule {
     return {
@@ -70,6 +72,8 @@ export class PennantModule {
         PennantDefinitionsModule.forRootAsync(definitions),
       ],
       providers: [
+        ...(otherProviders || []),
+        
         FeaturesFlagService,
         SimpleFeaturesFlagService,
         {
@@ -95,6 +99,7 @@ export class PennantModule {
         FeatureFlagRepository,
         FeaturesFlagService,
         SimpleFeaturesFlagService,
+        ...(otherProviders || []),
       ],
     }
   }

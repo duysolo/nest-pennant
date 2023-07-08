@@ -10,5 +10,7 @@ export interface IUSerFromRequest {
 
 export interface IPennantDefinitions {
   globalEnabledFeatures: string[]
-  getUserFromRequestHandler?: (req: unknown) => IUSerFromRequest | undefined
+  getUserFromRequestHandler?: (
+    req: unknown
+  ) => IUSerFromRequest | undefined | Promise<IUSerFromRequest | undefined>
 }
