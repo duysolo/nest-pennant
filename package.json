@@ -33,7 +33,6 @@
     "test:e2e": "jest --verbose=true --config ./test/jest-e2e.json",
     "test:all": "npm run test && npm run test:cov && npm run test:e2e"
   },
-  "dependencies": {},
   "devDependencies": {
     "@nestjs/core": "^10.0.5",
     "@nestjs/common": "^10.0.5",
@@ -83,10 +82,11 @@
     "testEnvironment": "node"
   },
   "bugs": {
-    "url": "https://github.com/duysolo/mercury-auth/issues"
+    "url": "https://github.com/duysolo/nest-pennant/issues"
   },
-  "homepage": "https://github.com/duysolo/mercury-auth#readme",
+  "homepage": "https://github.com/duysolo/nest-pennant#readme",
   "directories": {
     "test": "test"
-  }
+  },
+  "dependencies": {}
 }

@@ -1,6 +1,4 @@
-# Mercury Pennant
-
-## Introduction
+# NestJS Pennant
 
 ### A sleek and lightweight feature flag package exclusively designed for NestJS
 - This purpose-built tool eliminates unnecessary complexity
@@ -160,10 +158,54 @@ It will only check the features passed to the package via the `enabledFeatures` 
 
 Internally, it utilizes the `SimpleFeaturesFlagService` to check the features flag.
 
+```
+import { FeaturesEnabledSimple } from '@pipelife-labs/nest-pennant'
+
+@Controller('test-3')
+@FeaturesEnabledSimple(['FEATURE_6', 'FEATURE_7'])
+export class Test3Controller {
+  @Get()
+  public index(): string {
+    return 'Hello World!'
+  }
+}
+
+@Controller('test-4')
+export class Test4Controller {
+  @Get()
+  @FeaturesEnabledSimple(['FEATURE_6', 'FEATURE_7'])
+  public index(): string {
+    return 'Hello World!'
+  }
+}
+```
+
 ### `FeaturesEnabled` decorator
 The fetched features from `featureFlagRepository` will then be merged with the features list in the `enabledFeatures` from the `definitions` option mentioned above.
 
 Internally, it utilizes the `FeaturesFlagService` (which defined in `REQUEST` scope) to check the features flag.
+
+```
+import { FeaturesEnabled } from '@pipelife-labs/nest-pennant'
+
+@Controller('test')
+@FeaturesEnabled(['FEATURE_5'])
+export class TestController {
+  @Get()
+  public index(): string {
+    return 'Hello World!'
+  }
+}
+
+@Controller('test-2')
+export class Test2Controller {
+  @Get()
+  @FeaturesEnabled(['FEATURE_6', 'FEATURE_7'])
+  public index(): string {
+    return 'Hello World!'
+  }
+}
+```
 
 ### `FeaturesEnabledForUser` decorator
 This approach functions similarly to `FeaturesEnabled`, but it verifies the features for the currently logged-in user.
