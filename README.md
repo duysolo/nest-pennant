@@ -246,3 +246,6 @@ export class Test6Controller {
   }
 }
 ```
+
+Note: `FeaturesFlagService` is initialized with a `REQUEST` scope.
+[NestJS Injection Scopes](https://docs.nestjs.com/fundamentals/injection-scopes)
