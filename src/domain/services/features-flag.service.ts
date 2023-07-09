@@ -22,7 +22,7 @@ export class FeaturesFlagService {
     @Inject(REQUEST)
     private readonly _request: unknown
   ) {
-    this.enabledFeatures = uniq(this._options.globalEnabledFeatures)
+    this.enabledFeatures = uniq(this._options.enabledFeatures)
   }
 
   public async isEnabled(shouldHaveFeatures: string[]): Promise<boolean> {
@@ -42,7 +42,7 @@ export class FeaturesFlagService {
       return false
     }
 
-    await this.fetch(user.id)
+    await this.fetch(user)
 
     return this.checkFeatures(shouldHaveFeatures)
   }
@@ -68,7 +68,7 @@ export class FeaturesFlagService {
     const allEnabledFeatures = uniq([
       ...this.enabledFeatures,
       ...(!userId ? [] : this.enabledFeaturesForUser[userId] || []),
-      ...this._options.globalEnabledFeatures,
+      ...this._options.enabledFeatures,
     ])
 
     return (

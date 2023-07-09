@@ -13,7 +13,7 @@ export class SimpleFeaturesFlagService {
     @Inject(PENNANT_DEFINITIONS_MODULE_OPTIONS)
     private readonly _options: IPennantDefinitions
   ) {
-    this.enabledFeatures = uniq(this._options.globalEnabledFeatures)
+    this.enabledFeatures = uniq(this._options.enabledFeatures)
   }
 
   public isEnabled(shouldHaveFeatures: string[]): boolean {

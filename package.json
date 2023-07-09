@@ -1,18 +1,19 @@
 {
-  "name": "@mercury-labs/nest-pennant",
+  "name": "@pipelife-labs/nest-pennant",
   "version": "1.0.0",
-  "description": "A simple and light-weight feature flag package for NestJS",
+  "description": "A simple and lightweight feature flag package exclusively designed for NestJS",
   "author": "duysolo <duypt.dev@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/duysolo/nest-pennant.git"
   },
   "keywords": [
-    "mercury-labs",
+    "pipelife-labs",
     "feature flag",
     "features flag",
     "nestjs feature flag",
-    "nestjs features flag"
+    "nestjs features flag",
+    "trunk-based development strategy"
   ],
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",

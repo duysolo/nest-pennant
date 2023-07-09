@@ -1,7 +1,11 @@
-import { IUSerFromRequest } from '../definitions'
+interface IUSerFromRequest {
+  [x: string]: unknown
 
-export const defaultGetUserFromRequest = (
-  req: any
-): IUSerFromRequest | undefined => {
-  return req.user
+  id: string
+}
+
+export const defaultGetUserFromRequest = (req: any): string | undefined => {
+  const user: IUSerFromRequest = req.user
+
+  return user?.id
 }
