@@ -1,6 +1,6 @@
 # NestJS Pennant
 
-### A sleek and lightweight feature flag package exclusively designed for NestJS
+### A simple and light-weight feature flag package exclusively designed for NestJS
 - This purpose-built tool eliminates unnecessary complexity
 - allowing you to seamlessly roll out new application features with confidence
 - conduct A/B testing for interface designs
@@ -211,3 +211,38 @@ export class Test2Controller {
 This approach functions similarly to `FeaturesEnabled`, but it verifies the features for the currently logged-in user.
 
 Certainly, please make sure to check the `getUserFromRequestHandler` handler that was mentioned earlier.
+
+```
+import { FeaturesEnabled } from '@pipelife-labs/nest-pennant'
+
+@Controller('test-5')
+export class Test2Controller {
+  @Get()
+  @FeaturesEnabledForUser(['FEATURE_6', 'FEATURE_7'])
+  public index(): string {
+    return 'Hello World!'
+  }
+}
+```
+
+### `SimpleFeaturesFlagService` & `FeaturesFlagService` services
+You can also use the exposed services `SimpleFeaturesFlagService` and `FeaturesFlagService` from the package to perform logical checks as well.
+
+```
+import { SimpleFeaturesFlagService, FeaturesFlagService } from '@pipelife-labs/nest-pennant'
+
+@Controller('test-6')
+export class Test6Controller {
+  public constructor(
+    private readonly _simpleFeaturesFlagService: SimpleFeaturesFlagService,
+    private readonly _featuresFlagService: FeaturesFlagService
+  ) {}
+
+  @Get()
+  public index(): string {
+    console.log(this._simpleFeaturesFlagService)
+    console.log(this._featuresFlagService)
+    return 'Hello World!'
+  }
+}
+```
