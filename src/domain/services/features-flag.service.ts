@@ -1,4 +1,4 @@
-import { Inject, Injectable, Scope } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import {
   IPennantDefinitions,
   PENNANT_DEFINITIONS_MODULE_OPTIONS,
@@ -7,7 +7,7 @@ import { FeatureFlagRepository } from '../repositories'
 import { REQUEST } from '@nestjs/core'
 import { defaultGetUserFromRequest, uniq } from '../helpers'
 
-@Injectable({ scope: Scope.REQUEST })
+@Injectable()
 export class FeaturesFlagService {
   protected isFetched: boolean = false
   protected enabledFeatures: string[] = []
@@ -34,17 +34,17 @@ export class FeaturesFlagService {
   public async isEnabledForUser(
     shouldHaveFeatures: string[]
   ): Promise<boolean> {
-    const user = await (
-      this._options.getUserFromRequestHandler || defaultGetUserFromRequest
-    )(this._request)
+    const userId = await (this._options.getUserFromRequestHandler
+      ? this._options.getUserFromRequestHandler
+      : defaultGetUserFromRequest)(this._request)
 
-    if (!user) {
+    if (!userId) {
       return false
     }
 
-    await this.fetch(user)
+    await this.fetch(userId)
 
-    return this.checkFeatures(shouldHaveFeatures)
+    return this.checkFeatures(shouldHaveFeatures, userId)
   }
 
   protected async fetch(userId?: string): Promise<void> {
@@ -65,11 +65,11 @@ export class FeaturesFlagService {
   }
 
   protected checkFeatures(shouldHaveFeatures: string[], userId?: string) {
-    const allEnabledFeatures = uniq([
+    const allEnabledFeatures = [
       ...this.enabledFeatures,
-      ...(!userId ? [] : this.enabledFeaturesForUser[userId] || []),
+      ...(userId ? this.enabledFeaturesForUser[userId] || [] : []),
       ...this._options.enabledFeatures,
-    ])
+    ]
 
     return (
       !allEnabledFeatures.length ||

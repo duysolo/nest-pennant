@@ -73,7 +73,7 @@ export class PennantModule {
       ],
       providers: [
         ...(otherProviders || []),
-        
+
         FeaturesFlagService,
         SimpleFeaturesFlagService,
         {

@@ -4,7 +4,5 @@ export const PENNANT_DEFINITIONS_MODULE_OPTIONS: symbol = Symbol(
 
 export interface IPennantDefinitions {
   enabledFeatures: string[]
-  getUserFromRequestHandler?: (
-    req: unknown
-  ) => string | undefined | Promise<string | undefined>
+  getUserFromRequestHandler?: (req: unknown) => Promise<string | undefined>
 }
