@@ -64,7 +64,7 @@ interface IPennantDefinitions {
   enabledFeatures: string[]
   getUserFromRequestHandler?: (
     req: unknown
-  ) => IUSerFromRequest | undefined | Promise<IUSerFromRequest | undefined>
+  ) => string | undefined | Promise<string | undefined>
 }
 ```
 
