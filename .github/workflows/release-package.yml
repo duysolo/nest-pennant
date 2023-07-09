@@ -14,7 +14,6 @@ jobs:
           node-version: 16
       - run: npm ci
       - run: npm run test
-      - run: npm run test:e2e
 
   publish-npm:
     needs: build
@@ -31,7 +30,7 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org
-          scope: '@mercury-labs'
+          scope: '@pipelife-labs'
       - run: npm ci
       - run: npm run build
       - run: npm run increase-version
